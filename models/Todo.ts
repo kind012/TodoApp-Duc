@@ -1,4 +1,4 @@
-import mongoose, { Document, model } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 export interface ITodos extends Document {
   id: string;
@@ -6,7 +6,7 @@ export interface ITodos extends Document {
   priority: string;
 }
 
-const todoSchema = new mongoose.Schema(
+const todosSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -20,4 +20,5 @@ const todoSchema = new mongoose.Schema(
   }
 );
 
-export const Todo = mongoose.models.Todo || mongoose.model("todos", todoSchema);
+export const Todo =
+  mongoose.models.todoapps || mongoose.model("todoapps", todosSchema);

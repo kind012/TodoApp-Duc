@@ -8,7 +8,8 @@ const Todolist = () => {
         {/* head */}
         <thead>
           <tr>
-            <th>Tasks</th>
+            <th>Name</th>
+            <th>Priority</th>
             <th>Actions</th>
           </tr>
         </thead>
