@@ -1,16 +1,16 @@
 "use client";
 import React from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import Modal from "./Modal";
+import Modal from "../components/Modal";
 import { FormEvent, useState } from "react";
 import axios from "axios";
-import { ITodos } from "@/models";
+import { useRouter } from "next/navigation";
 
 const AddTask = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
-  const [todos, setTodos] = useState<ITodos[]>([]);
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,15 +21,8 @@ const AddTask = () => {
     };
 
     try {
-      const res = await axios.post("/api/posts", data);
-
-      if (res.status === 201) {
-        alert("Task created successfully!");
-
-        setTodos([...todos, res.data]);
-      } else {
-        alert("Something went wrong!");
-      }
+      await axios.post("/api/posts", data);
+      router.refresh();
     } catch (error) {
       console.log(error);
     }

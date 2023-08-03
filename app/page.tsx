@@ -1,5 +1,5 @@
-import AddTask from "./components/AddTask";
-import Todolist from "./components/Todolist";
+import AddTask from "./AddTask";
+import Todolist from "../components/Todolist";
 
 export default function Home() {
   return (

@@ -1,6 +1,9 @@
 import { connectMongoDB } from "@/libs/ultils";
-import { Todo } from "@/models";
+import { ITodos, Todo } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
+import express from "express";
+const app = express();
+app.use(express.json());
 
 export async function GET() {
   await connectMongoDB();
@@ -21,6 +24,9 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const id = req.nextUrl.searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ message: "Invalid id" }, { status: 400 });
+    }
     await connectMongoDB();
     const deletedTodo = await Todo.findByIdAndDelete({ _id: id });
     if (deletedTodo) {
@@ -33,15 +39,21 @@ export async function DELETE(req: NextRequest) {
 }
 export async function PUT(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
-  await connectMongoDB();
-  await Todo.findByIdAndUpdate(id);
-  return NextResponse.json({ message: "Topic deleted" }, { status: 200 });
+  const { name, priority } = req.body as unknown as ITodos;
+  if (!id) {
+    return NextResponse.json({ message: "Id is required" }, { status: 400 });
+  }
+  try {
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      { name, priority },
+      { new: true }
+    );
+    if (!updatedTodo) {
+      return NextResponse.json({ message: "Task not found" }, { status: 404 });
+    }
+    return NextResponse.json({ message: "Topic Update" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ message: "Invalid request" }, { status: 500 });
+  }
 }
-
-// async function GET của tôi có viết đúng logic và có sai sót gì không, có bạn fix giúp tôi với
-
-// export async function GET() {
-//   await connectMongoDB();
-//   const todo = await Todo.find();
-//   return NextResponse.json({ todo });
-// }
