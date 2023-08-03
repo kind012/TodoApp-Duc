@@ -1,11 +1,10 @@
 /** @type {import('next').NextConfig} */
-const webpack = require("webpack");
-const { parsed: myEnv } = require("dotenv").config({
-  path: `${process.env.MONGODB_URL_CONNECT}`,
-});
+const Dotenv = require("dotenv-webpack");
+
 const nextConfig = {
   webpack(config) {
-    config.plugins.push(new webpack.EnvironmentPlugin(myEnv));
+    // Sử dụng dotenv-webpack thay vì EnvironmentPlugin
+    config.plugins.push(new Dotenv());
     return config;
   },
 };
