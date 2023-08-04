@@ -1,16 +1,9 @@
 "use client";
 import { ITodos } from "@/models";
 import axios from "axios";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  FormEvent,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FiTrash2, FiEdit } from "react-icons/fi";
 import Modal from "../components/Modal";
-import { useRouter } from "next/navigation";
 
 interface Data {
   todo: ITodos[];
@@ -25,52 +18,39 @@ const Task = () => {
   const [todos, setTodos] = useState<ITodos[]>([]);
   console.log(todos);
 
-  const router = useRouter();
-
   const handleDelete = async () => {
     try {
-      await axios.delete(`/api/posts?id=${currentId}`);
-      router.refresh();
+      const { data } = await axios.delete(`/api/posts?id=${currentId}`);
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
 
-  // const getAllTodos = useCallback(async () => {
-  //   try {
-  //     const res = await axios.get<Data>("/api/posts");
-  //     setTodos(res.data.todo);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }, []);
+  const handleSubmit = useCallback(async () => {
+    const editTodo = {
+      name: nameRef.current?.value,
+      priority: priorityRef.current?.value,
+    };
+    if (!editTodo.name || !editTodo.priority) {
+      alert("Name and priority are required");
+      return;
+    }
+    if (!currentId) {
+      alert("Please select a task to update");
+      return;
+    }
 
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-
-      const editTodo = {
-        name: nameRef.current?.value,
-        priority: priorityRef.current?.value,
-      };
-      if (!editTodo.name || !editTodo.priority) {
-        alert("Name and priority are required");
-        return;
-      }
-      if (!currentId) {
-        alert("Please select a task to update");
-        return;
-      }
-
-      try {
-        await axios.put<Data>(`/api/posts?id=${currentId}`, editTodo);
-        router.refresh();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [currentId]
-  );
+    try {
+      const { data } = await axios.put<Data>(
+        `/api/posts?id=${currentId}`,
+        editTodo
+      );
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  }, [currentId]);
 
   useEffect(() => {
     const getAllTodos = async () => {

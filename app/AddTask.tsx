@@ -2,27 +2,23 @@
 import React from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Modal from "../components/Modal";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 
 const AddTask = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
-  const router = useRouter();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const data = {
+  const handleSubmit = async () => {
+    const dataTodo = {
       name: name,
       priority: priority,
     };
 
     try {
-      await axios.post("/api/posts", data);
-      router.refresh();
+      const { data } = await axios.post("/api/posts", dataTodo);
+      return data;
     } catch (error) {
       console.log(error);
     }
