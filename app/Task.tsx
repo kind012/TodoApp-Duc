@@ -1,9 +1,16 @@
 "use client";
 import { ITodos } from "@/models";
 import axios from "axios";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  FormEvent,
+} from "react";
 import { FiTrash2, FiEdit } from "react-icons/fi";
 import Modal from "../components/Modal";
+import { useRouter } from "next/navigation";
 
 interface Data {
   todo: ITodos[];
@@ -16,11 +23,12 @@ const Task = () => {
   const priorityRef = useRef<HTMLInputElement>(null);
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [todos, setTodos] = useState<ITodos[]>([]);
-  console.log(todos);
+  const route = useRouter();
 
   const handleDelete = async () => {
     try {
       const { data } = await axios.delete(`/api/posts?id=${currentId}`);
+      route.refresh();
       return data;
     } catch (error) {
       console.log(error);
@@ -32,14 +40,6 @@ const Task = () => {
       name: nameRef.current?.value,
       priority: priorityRef.current?.value,
     };
-    if (!editTodo.name || !editTodo.priority) {
-      alert("Name and priority are required");
-      return;
-    }
-    if (!currentId) {
-      alert("Please select a task to update");
-      return;
-    }
 
     try {
       const { data } = await axios.put<Data>(
@@ -131,61 +131,3 @@ const Task = () => {
 };
 
 export default Task;
-
-// function và đoạn code của tôi có vấn đề gì không
-
-//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-
-//     const editTodo = { name: newName, priority: newPriority };
-//     if (!newName || !newPriority) {
-//       alert("Name and priority are required");
-//       return;
-//     }
-//     if (!currentId) {
-//       alert("Please select a task to update");
-//       return;
-//     }
-
-//     try {
-//       const res = await axios.put<Data>(`/api/posts&id=${currentId}`, editTodo);
-//       setTodos(res.data.todo);
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//     <tr key={todo._id} onClick={() => setCurrentId(todo._id)}>
-//             <td className="w-full">{todo.name}</td>
-//             <td className="w-full">{todo.priority}</td>
-//             <td className="flex gap-5">
-//               <FiEdit
-//                 cursor="pointer"
-//                 onClick={() => setOpenModalEdit(true)}
-//                 className="text-blue-500"
-//                 size={25}
-//               />
-//               <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
-//                 <form onSubmit={handleSubmit}>
-//                   <h3 className="text-lg font-bold">Edit task</h3>
-//                   <div className="modal-action">
-//                     <input
-//                       value={newName}
-//                       onChange={(e) => setNewName(e.target.value)}
-//                       type="text"
-//                       placeholder="Type here"
-//                       className="w-full input input-bordered"
-//                     />
-//                     <input
-//                       value={newPriority}
-//                       onChange={(e) => setNewPriority(e.target.value)}
-//                       type="text"
-//                       placeholder="Type here"
-//                       className="w-full input input-bordered"
-//                     />
-//                     <button type="submit" className="btn">
-//                       Submit
-//                     </button>
-//                   </div>
-//                 </form>
-//               </Modal>
