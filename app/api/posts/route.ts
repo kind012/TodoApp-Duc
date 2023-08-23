@@ -1,5 +1,5 @@
 import { connectMongoDB } from "@/libs/ultils";
-import { ITodos, Todo } from "@/models";
+import { Todo } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -20,12 +20,12 @@ export async function POST(req: NextRequest) {
 }
 export async function DELETE(req: NextRequest) {
   try {
-    const id = req.nextUrl.searchParams.get("id");
+    const id = req?.nextUrl.searchParams.get("id");
     if (!id) {
       return NextResponse.json({ message: "Invalid id" }, { status: 400 });
     }
     await connectMongoDB();
-    const deletedTodo = await Todo.findByIdAndDelete({ _id: id });
+    const deletedTodo = await Todo.findByIdAndDelete(id);
     if (deletedTodo) {
       return NextResponse.json(deletedTodo);
     }
@@ -35,18 +35,18 @@ export async function DELETE(req: NextRequest) {
   }
 }
 export async function PUT(req: NextRequest) {
-  const id = req.nextUrl.searchParams.get("id");
-  const { name, priority } = await req.json();
-
-  if (!id) {
-    return NextResponse.json({ message: "Id is required" }, { status: 400 });
-  }
-
   try {
+    const id = req?.nextUrl.searchParams.get("id");
+    const { name, priority } = await req.json();
+
+    if (!id) {
+      return NextResponse.json({ message: "Id is required" }, { status: 400 });
+    }
     await connectMongoDB();
+
     const updatedTodo = await Todo.findByIdAndUpdate(
       id,
-      { name, priority },
+      { name: name ?? undefined, priority: priority ?? undefined },
       { new: true }
     );
     if (!updatedTodo) {
