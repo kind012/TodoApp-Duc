@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Task from "../app/Task";
 import Preloader from "./Preload";
+import AddTask from "@/app/AddTask";
 
 const Todolist = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -17,6 +18,9 @@ const Todolist = () => {
         <Preloader />
       ) : (
         <div className="overflow-x-auto">
+          <div className="mb-5">
+            <AddTask />
+          </div>
           <table className="table w-full">
             {/* head */}
             <thead>
