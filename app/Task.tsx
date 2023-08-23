@@ -61,7 +61,7 @@ const Task = () => {
 
   return (
     <>
-      {data.todo?.map((todo: ITodos) => {
+      {data?.todo?.map((todo: ITodos) => {
         return (
           <tr key={todo._id} onClick={() => setCurrentId(todo._id)}>
             <td className="w-full">{todo?.name}</td>
