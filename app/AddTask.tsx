@@ -1,24 +1,35 @@
 "use client";
-import React from "react";
+import React, { FormEvent } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import Modal from "../components/Modal";
 import { useState } from "react";
 import axios from "axios";
+import useSWR from "swr";
+import { ITodos } from "@/models";
+
+interface Data {
+  todo: ITodos[];
+}
 
 const AddTask = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
 
-  const handleSubmit = async () => {
+  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+
+  const { mutate } = useSWR("/api/posts", fetcher);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const dataTodo = {
       name: name,
       priority: priority,
     };
 
     try {
-      const { data } = await axios.post("/api/posts", dataTodo);
-      return data;
+      const res = await axios.post<Data>("/api/posts", dataTodo);
+      mutate(res?.data.todo);
     } catch (error) {
       console.log(error);
     }
