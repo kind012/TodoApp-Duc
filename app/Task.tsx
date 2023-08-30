@@ -26,6 +26,7 @@ const Task = () => {
     try {
       await axios.delete<Data>(`/api/posts?id=${currentId}`);
       mutate(false);
+      setOpenModalDeleted(false);
     } catch (error) {
       console.log(error);
     }
