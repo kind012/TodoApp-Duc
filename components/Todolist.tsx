@@ -10,7 +10,7 @@ const Todolist = () => {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 500);
+    }, 100);
   });
   return (
     <>
