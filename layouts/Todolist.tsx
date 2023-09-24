@@ -1,4 +1,3 @@
-"use client";
 import Task from "@/layouts/Task";
 import AddTask from "@/layouts/AddTask";
 
@@ -9,7 +8,7 @@ const Todolist = () => {
         <div className="mb-5">
           <AddTask />
         </div>
-        <table className="table w-fit">
+        <table className="table w-full">
           <thead>
             <tr>
               <th>Name</th>

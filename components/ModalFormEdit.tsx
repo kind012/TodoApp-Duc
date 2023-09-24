@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, RefObject, FormEvent } from "react";
 import { FiEdit } from "react-icons/fi";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 
 interface ModalFormEditProps {
   handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void>;

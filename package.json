@@ -27,7 +27,7 @@
     "webpack": "^5.88.2"
   },
   "devDependencies": {
-    "daisyui": "^3.5.0",
+    "daisyui": "^3.7.7",
     "dotenv-webpack": "^8.0.1"
   }
 }

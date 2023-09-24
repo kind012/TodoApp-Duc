@@ -1,7 +1,7 @@
 "use client";
-import React, { Dispatch } from "react";
+import React from "react";
 import { FiTrash2 } from "react-icons/fi";
-import Modal from "./Modal";
+import Modal from "@/components/Modal";
 
 interface ModalFormDeleteProps {
   handleDelete: () => Promise<void>;
