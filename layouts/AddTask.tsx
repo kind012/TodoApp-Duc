@@ -56,6 +56,7 @@ const AddTask = () => {
               type="text"
               placeholder="Type here"
               className="w-full input input-bordered"
+              required
             />
             <input
               value={priority}
@@ -63,6 +64,7 @@ const AddTask = () => {
               type="text"
               placeholder="Type here"
               className="w-full input input-bordered"
+              required
             />
             <button
               type="submit"

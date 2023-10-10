@@ -3,7 +3,7 @@ import { ITodos } from "@/models";
 import axios from "axios";
 import React, { useState, useCallback, useRef, FormEvent } from "react";
 import useSWR from "swr";
-import ModalFormEdit from "@/components/ModalFormEdit";
+import ModalFormEdit from "@/components/ModalFromEdit";
 import ModalFormDelete from "@/components/ModalFormDelete";
 
 interface Data {
