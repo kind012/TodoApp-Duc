@@ -21,4 +21,4 @@ const todosSchema = new mongoose.Schema(
 );
 
 export const Todo =
-  mongoose.models.todoapps || mongoose.model("todoapps", todosSchema);
+  mongoose.models.todoapp || mongoose.model("todoapp", todosSchema);

@@ -3,8 +3,9 @@ import { ITodos } from "@/models";
 import axios from "axios";
 import React, { useState, useCallback, useRef, FormEvent } from "react";
 import useSWR from "swr";
-import ModalFormEdit from "@/components/ModalFromEdit";
 import ModalFormDelete from "@/components/ModalFormDelete";
+import { FiEdit } from "react-icons/fi";
+import Modal from "@/components/Modal";
 
 interface Data {
   todo: ITodos[];
@@ -13,6 +14,7 @@ interface Data {
 const Task = () => {
   const [currentId, setCurrentId] = useState<string | null>(null);
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
+  const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
 
   const nameRef = useRef<HTMLInputElement>(null);
   const priorityRef = useRef<HTMLInputElement>(null);
@@ -31,7 +33,6 @@ const Task = () => {
       console.log(error);
     }
   };
-
   const handleSubmit = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -42,7 +43,7 @@ const Task = () => {
 
       try {
         const res = await axios.put(`/api/posts?id=${currentId}`, editTodo);
-        mutate(res.data);
+        mutate(res?.data);
       } catch (error) {
         console.log(error);
       }
@@ -58,11 +59,38 @@ const Task = () => {
             <td className="w-full">{todo?.name}</td>
             <td className="w-full">{todo?.priority}</td>
             <td className="flex gap-5">
-              <ModalFormEdit
-                handleSubmit={handleSubmit}
-                nameRef={nameRef}
-                priorityRef={priorityRef}
+              <FiEdit
+                cursor="pointer"
+                onClick={() => setOpenModalEdit(true)}
+                className="text-blue-500"
+                size={25}
               />
+              <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
+                <form onSubmit={handleSubmit}>
+                  <h3 className="text-lg font-bold">Edit task</h3>
+                  <div className="modal-action">
+                    <input
+                      ref={nameRef}
+                      type="text"
+                      placeholder="Type here"
+                      className="w-full input input-bordered"
+                    />
+                    <input
+                      ref={priorityRef}
+                      type="text"
+                      placeholder="Type here"
+                      className="w-full input input-bordered"
+                    />
+                    <button
+                      type="submit"
+                      className="btn"
+                      onClick={() => setOpenModalEdit(false)}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </Modal>
               <ModalFormDelete
                 handleDelete={handleDelete}
                 setOpenModalDeleted={setOpenModalDeleted}

@@ -34,6 +34,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ message: "Deletion error" }, { status: 500 });
   }
 }
+
 export async function PUT(req: NextRequest) {
   try {
     const id = req?.nextUrl.searchParams.get("id");
