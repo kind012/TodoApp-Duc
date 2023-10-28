@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import useSWR from "swr";
 import { ITodos } from "@/models";
+import { toast } from "sonner";
 
 interface Data {
   todo: ITodos[];
@@ -30,7 +31,9 @@ const AddTask = () => {
     try {
       const res = await axios.post<Data>("/api/posts", dataTodo);
       mutate(res?.data.todo);
+      toast.success("Task created successfully");
     } catch (error) {
+      toast.error("Failed to created task, please try again.");
       console.log(error);
     }
     setName("");
@@ -41,7 +44,7 @@ const AddTask = () => {
     <div>
       <button
         onClick={() => setModalOpen(true)}
-        className="w-full btn btn-primary"
+        className="w-full  btn btn-primary"
       >
         Add new task <AiOutlinePlus className="ml-2" size={18} />
       </button>
@@ -54,7 +57,7 @@ const AddTask = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               type="text"
-              placeholder="Type here"
+              placeholder="Name"
               className="w-full input input-bordered"
               required
             />
@@ -62,7 +65,7 @@ const AddTask = () => {
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
               type="text"
-              placeholder="Type here"
+              placeholder="Priority"
               className="w-full input input-bordered"
               required
             />
