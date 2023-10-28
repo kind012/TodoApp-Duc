@@ -6,50 +6,54 @@ import useSWR from "swr";
 import ModalFormDelete from "@/components/ModalFormDelete";
 import { FiEdit } from "react-icons/fi";
 import Modal from "@/components/Modal";
-
-interface Data {
-  todo: ITodos[];
-}
+import { toast } from "sonner";
 
 const Task = () => {
-  const [currentId, setCurrentId] = useState<string | null>(null);
+  const [currentId, setCurrentId] = useState<string>("");
   const [openModalDeleted, setOpenModalDeleted] = useState<boolean>(false);
   const [openModalEdit, setOpenModalEdit] = useState<boolean>(false);
 
-  const nameRef = useRef<HTMLInputElement>(null);
-  const priorityRef = useRef<HTMLInputElement>(null);
+  const [name, setName] = useState<string>("");
+  const [priority, setPriority] = useState<string>("");
 
-  const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+  const fetcher = (url: string) => axios.get(url).then((res) => res?.data);
   const { data, mutate } = useSWR("/api/posts", fetcher, {
-    revalidateOnFocus: false,
+    revalidateOnMount: true,
   });
 
   const handleDelete = async () => {
     try {
-      await axios.delete<Data>(`/api/posts?id=${currentId}`);
+      await axios.delete<ITodos[]>(`/api/posts?id=${currentId}`);
       mutate(false);
       setOpenModalDeleted(false);
+      toast.success("Delete task successfully");
     } catch (error) {
+      toast.error("Failed to delete task, please try again.");
       console.log(error);
     }
   };
-  const handleSubmit = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      const editTodo = {
-        name: nameRef.current?.value,
-        priority: priorityRef.current?.value,
-      };
 
-      try {
-        const res = await axios.put(`/api/posts?id=${currentId}`, editTodo);
-        mutate(res?.data);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    [currentId, nameRef, priorityRef]
-  );
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const editTodo = {
+      name: name,
+      priority: priority,
+    };
+
+    try {
+      const res = await axios.put<ITodos[]>(
+        `/api/posts?id=${currentId}`,
+        editTodo
+      );
+      mutate(res.data);
+      toast.success("Update task successfully");
+    } catch (error) {
+      toast.error("Failed to update task, please try again.");
+      console.log(error);
+    }
+    setName("");
+    setPriority("");
+  };
 
   return (
     <>
@@ -70,15 +74,19 @@ const Task = () => {
                   <h3 className="text-lg font-bold">Edit task</h3>
                   <div className="modal-action">
                     <input
-                      ref={nameRef}
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                       type="text"
-                      placeholder="Type here"
+                      placeholder="Name"
+                      required
                       className="w-full input input-bordered"
                     />
                     <input
-                      ref={priorityRef}
+                      name={priority}
+                      onChange={(e) => setPriority(e.target.value)}
                       type="text"
-                      placeholder="Type here"
+                      placeholder="Priority"
+                      required
                       className="w-full input input-bordered"
                     />
                     <button

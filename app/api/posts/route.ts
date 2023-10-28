@@ -44,12 +44,14 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ message: "Id is required" }, { status: 400 });
     }
     await connectMongoDB();
+    if (id) {
+      var updatedTodo = await Todo.findByIdAndUpdate(
+        id,
+        { name, priority },
+        { new: true }
+      );
+    }
 
-    const updatedTodo = await Todo.findByIdAndUpdate(
-      id,
-      { name: name ?? undefined, priority: priority ?? undefined },
-      { new: true }
-    );
     if (!updatedTodo) {
       return NextResponse.json({ message: "Todo not found" }, { status: 404 });
     }
